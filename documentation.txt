@@ -1,0 +1,78 @@
+# Authentication & Profile API Documentation
+
+Base URL: http://localhost/api
+
+## 1. Authentication Endpoints
+
+### Register
+- **Path**: `/register`
+- **Method**: `POST`
+- **Summary**: Inscription d'un utilisateur
+- **Request Body (JSON)**:
+  - `name`: string (required)
+  - `email`: string (required, unique)
+  - `password`: string (required, min 8 chars)
+- **Responses**:
+  - `201 Created`: Account created successfully. Returns `message` and `token`.
+  - `422 Unprocessable Entity`: Validation error.
+
+### Login
+- **Path**: `/login`
+- **Method**: `POST`
+- **Summary**: Connexion utilisateur
+- **Request Body (JSON)**:
+  - `email`: string (required)
+  - `password`: string (required)
+- **Responses**:
+  - `200 OK`: Login successful. Returns `message` and `token`.
+  - `401 Unauthorized`: Invalid credentials.
+
+### Logout
+- **Path**: `/logout`
+- **Method**: `POST`
+- **Summary**: Déconnexion utilisateur
+- **Security**: Bearer Token (Sanctum)
+- **Responses**:
+  - `200 OK`: Logout successful.
+  - `401 Unauthorized`: Unauthenticated.
+
+---
+
+## 2. Profile Endpoints (Auth Required)
+*All these endpoints require a `Authorization: Bearer <token>` header.*
+
+### Get Profile
+- **Path**: `/me`
+- **Method**: `GET`
+- **Summary**: Récupérer les informations du profil
+- **Responses**:
+  - `200 OK`: Profile fetched successfully. Returns user data.
+
+### Update Profile
+- **Path**: `/me`
+- **Method**: `PUT`
+- **Summary**: Mettre à jour le nom ou l'email
+- **Request Body (JSON)**:
+  - `name`: string (sometimes required)
+  - `email`: string (sometimes required, unique)
+- **Responses**:
+  - `200 OK`: Profile updated successfully. Returns updated user data.
+
+### Update Password
+- **Path**: `/me/password`
+- **Method**: `PUT`
+- **Summary**: Changer le mot de passe
+- **Request Body (JSON)**:
+  - `current_password`: string (required)
+  - `new_password`: string (required, min 8 chars)
+  - `new_password_confirmation`: string (required)
+- **Responses**:
+  - `200 OK`: Password updated successfully.
+  - `422 Unprocessable Entity`: Current password incorrect or validation error.
+
+### Delete Account
+- **Path**: `/me`
+- **Method**: `DELETE`
+- **Summary**: Supprimer le compte utilisateur
+- **Responses**:
+  - `200 OK`: Account deleted successfully.
