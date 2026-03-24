@@ -1,4 +1,4 @@
-# Authentication & Profile API Documentation
+# Authentication & Banking API Documentation
 
 Base URL: http://localhost/api
 
@@ -76,3 +76,74 @@ Base URL: http://localhost/api
 - **Summary**: Supprimer le compte utilisateur
 - **Responses**:
   - `200 OK`: Account deleted successfully.
+
+---
+
+## 3. Account Endpoints (Auth Required)
+
+### List Accounts
+- **Path**: `/accounts`
+- **Method**: `GET`
+- **Summary**: Liste tous les comptes de l'utilisateur
+- **Responses**:
+  - `200 OK`: Accounts fetched successfully.
+
+### Show Account
+- **Path**: `/accounts/{id}`
+- **Method**: `GET`
+- **Summary**: Détails d'un compte spécifique
+- **Responses**:
+  - `200 OK`: Account details fetched successfully.
+
+### Create Account
+- **Path**: `/accounts`
+- **Method**: `POST`
+- **Summary**: Ouvrir un nouveau compte
+- **Request Body (JSON)**:
+  - `type`: string (checking | savings | minor)
+  - `initial_balance`: numeric (optional)
+  - `overdraft_limit`: numeric (optional, for checking)
+  - `withdraw_limit`: integer (optional, for minor)
+  - `guardian_id`: integer (optional, for minor)
+- **Responses**:
+  - `201 Created`: Account created successfully.
+
+---
+
+## 4. Transaction Endpoints (Auth Required)
+
+### Deposit
+- **Path**: `/accounts/{id}/deposit`
+- **Method**: `POST`
+- **Summary**: Effectuer un dépôt
+- **Request Body (JSON)**:
+  - `amount`: numeric (positive)
+- **Responses**:
+  - `200 OK`: Deposit successful.
+
+### Withdraw
+- **Path**: `/accounts/{id}/withdraw`
+- **Method**: `POST`
+- **Summary**: Effectuer un retrait
+- **Request Body (JSON)**:
+  - `amount`: numeric (positive)
+- **Responses**:
+  - `200 OK`: Withdrawal successful.
+  - `422 Unprocessable Entity`: Insufficient funds or limit exceeded.
+
+---
+
+## 5. Transfer Endpoints (Auth Required)
+
+### Internal Transfer
+- **Path**: `/transfers`
+- **Method**: `POST`
+- **Summary**: Transférer de l'argent entre deux comptes
+- **Request Body (JSON)**:
+  - `source_account_id`: UUID
+  - `destination_account_id`: UUID
+  - `amount`: numeric (positive)
+- **Responses**:
+  - `200 OK`: Transfer completed successfully.
+  - `422 Unprocessable Entity`: Logic error (funds, etc.)
+  - `403 Forbidden`: Unauthorized (source account not owned by user)
