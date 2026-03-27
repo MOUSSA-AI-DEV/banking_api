@@ -43,4 +43,11 @@ class Account extends Model
     {
         return $this->hasMany(Transfer::class, 'destination_account_id');
     }
+
+    public function coHolders()
+    {
+        return $this->belongsToMany(User::class, 'account_user')
+                    ->withPivot('role')
+                    ->withTimestamps();
+    }
 }
